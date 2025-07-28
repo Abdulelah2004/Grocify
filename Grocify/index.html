@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="styles.css">
+    <title>Grocify - Groceries in 15 Minutes</title>
+</head>
+<body class="bg-gray-50">
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="fixed inset-0 bg-yellow-300 z-50 flex items-center justify-center">
+        <div class="text-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <h2 class="text-2xl font-bold text-gray-900">Loading Grocify...</h2>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden">
+        <div class="fixed top-0 right-0 h-full w-80 bg-white shadow-lg transform translate-x-full transition-transform duration-300" id="mobileMenu">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-8">
+                    <img src="/placeholder.svg?height=40&width=120&text=Grocify+Logo" alt="Grocify" class="h-10">
+                    <button id="closeMobileMenu" class="text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <nav class="space-y-4">
+                    <a href="#home" class="block py-3 px-4 text-gray-700 hover:bg-yellow-100 rounded-lg transition-colors mobile-nav-link">
+                        <i class="fas fa-home mr-3"></i>Home
+                    </a>
+                    <a href="#about" class="block py-3 px-4 text-gray-700 hover:bg-yellow-100 rounded-lg transition-colors mobile-nav-link">
+                        <i class="fas fa-info-circle mr-3"></i>About
+                    </a>
+                    <a href="#features" class="block py-3 px-4 text-gray-700 hover:bg-yellow-100 rounded-lg transition-colors mobile-nav-link">
+                        <i class="fas fa-star mr-3"></i>Features
+                    </a>
+                    <a href="#testimonials" class="block py-3 px-4 text-gray-700 hover:bg-yellow-100 rounded-lg transition-colors mobile-nav-link">
+                        <i class="fas fa-comments mr-3"></i>Testimonials
+                    </a>
+                    <a href="#products" class="block py-3 px-4 text-gray-700 hover:bg-yellow-100 rounded-lg transition-colors mobile-nav-link">
+                        <i class="fas fa-shopping-basket mr-3"></i>Products
+                    </a>
+                    <a href="#contact" class="block py-3 px-4 text-gray-700 hover:bg-yellow-100 rounded-lg transition-colors mobile-nav-link">
+                        <i class="fas fa-envelope mr-3"></i>Contact
+                    </a>
+                </nav>
+                <div class="mt-8 pt-8 border-t">
+                    <button class="w-full bg-yellow-300 text-gray-900 py-3 px-6 rounded-lg font-medium hover:bg-yellow-400 transition-colors">
+                        <i class="fas fa-download mr-2"></i>Download App
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div id="cartSidebar" class="fixed top-0 right-0 h-full w-80 bg-white shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+        <div class="p-6 h-full flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold">Shopping Cart</h3>
+                <button id="closeCart" class="text-gray-600 hover:text-gray-900">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="cartItems" class="flex-1 overflow-y-auto">
+                <!-- Cart items will be populated by JavaScript -->
+            </div>
+            <div class="border-t pt-4">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-lg font-bold">Total:</span>
+                    <span id="cartTotal" class="text-xl font-bold text-yellow-500">$0.00</span>
+                </div>
+                <button id="checkoutBtn" class="w-full bg-yellow-300 text-gray-900 py-3 px-6 rounded-lg font-medium hover:bg-yellow-400 transition-colors">
+                    Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+<section id="home" class="min-h-screen w-full bg-gradient-to-br from-yellow-400 via-yellow-300 to-orange-400 relative overflow-hidden">
+    <!-- Animated Background Elements -->
+    <div class="absolute inset-0 overflow-hidden opacity-10">
+        <div class="absolute top-10 left-10 w-20 h-20 bg-white rounded-full animate-float"></div>
+        <div class="absolute top-32 right-20 w-16 h-16 bg-white rounded-full animate-float-delay-1"></div>
+        <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white rounded-full animate-float-delay-2"></div>
+    </div>
+
+    <!-- Fixed Navigation Bar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-lg transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <a href="#home" class="flex items-center">
+                    <img src="images/logo.png" alt="Grocify" class="h-8 sm:h-10 lg:h-12 transition-all duration-300 hover:scale-105">
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="#home" class="nav-link px-3 py-2 text-gray-800 hover:text-yellow-500 font-medium transition-colors border-b-2 border-transparent hover:border-yellow-500">Home</a>
+                    <a href="#about" class="nav-link px-3 py-2 text-gray-800 hover:text-yellow-500 font-medium transition-colors border-b-2 border-transparent hover:border-yellow-500">About</a>
+                    <a href="#features" class="nav-link px-3 py-2 text-gray-800 hover:text-yellow-500 font-medium transition-colors border-b-2 border-transparent hover:border-yellow-500">Features</a>
+                    <a href="#products" class="nav-link px-3 py-2 text-gray-800 hover:text-yellow-500 font-medium transition-colors border-b-2 border-transparent hover:border-yellow-500">Products</a>
+                    <a href="#testimonials" class="nav-link px-3 py-2 text-gray-800 hover:text-yellow-500 font-medium transition-colors border-b-2 border-transparent hover:border-yellow-500">Testimonials</a>
+                    <a href="#contact" class="nav-link px-3 py-2 text-gray-800 hover:text-yellow-500 font-medium transition-colors border-b-2 border-transparent hover:border-yellow-500">Contact</a>
+                </div>
+                
+                <!-- Cart and Mobile Menu -->
+                <div class="flex items-center space-x-4">
+                    <button id="cartToggle" class="relative p-2 group">
+                        <i class="fas fa-shopping-cart text-xl text-gray-800 group-hover:text-yellow-500 transition-colors"></i>
+                        <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </button>
+                    <button id="menuBtn" class="lg:hidden p-2 text-gray-800 hover:text-yellow-500 transition-colors">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu (Improved) -->
+    <div id="mobileMenu" class="lg:hidden fixed inset-0 z-40 bg-black bg-opacity-50 hidden transition-all duration-300">
+        <div class="fixed top-0 right-0 h-full w-80 bg-white shadow-xl transform translate-x-full transition-transform duration-300" id="mobileMenuPanel">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-8">
+                    <img src="images/logo.png" alt="Grocify" class="h-10">
+                    <button id="closeMenu" class="text-gray-600 hover:text-gray-900 p-2">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <nav class="space-y-4">
+                    <a href="#home" class="mobile-nav-link block py-3 px-4 text-gray-700 hover:bg-yellow-100 rounded-lg transition-colors">
+                        <i class="fas fa-home mr-3"></i>Home
+                    </a>
+                    <a href="#about" class="mobile-nav-link block py-3 px-4 text-gray-700 hover:bg-yellow-100 rounded-lg transition-colors">
+                        <i class="fas fa-info-circle mr-3"></i>About
+                    </a>
+                    <a href="#features" class="mobile-nav-link block py-3 px-4 text-gray-700 hover:bg-yellow-100 rounded-lg transition-colors">
+                        <i class="fas fa-star mr-3"></i>Features
+                    </a>
+                    <a href="#products" class="mobile-nav-link block py-3 px-4 text-gray-700 hover:bg-yellow-100 rounded-lg transition-colors">
+                        <i class="fas fa-shopping-basket mr-3"></i>Products
+                    </a>
+                    <a href="#testimonials" class="mobile-nav-link block py-3 px-4 text-gray-700 hover:bg-yellow-100 rounded-lg transition-colors">
+                        <i class="fas fa-comments mr-3"></i>Testimonials
+                    </a>
+                    <a href="#contact" class="mobile-nav-link block py-3 px-4 text-gray-700 hover:bg-yellow-100 rounded-lg transition-colors">
+                        <i class="fas fa-envelope mr-3"></i>Contact
+                    </a>
+                </nav>
+                <div class="mt-8 pt-8 border-t">
+                    <button class="w-full bg-yellow-400 text-gray-900 py-3 px-6 rounded-lg font-medium hover:bg-yellow-500 transition-colors">
+                        <i class="fas fa-download mr-2"></i>Download App
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Content -->
+    <div class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-24 lg:pt-32 pb-20">
+        <div class="flex flex-col lg:flex-row items-center min-h-[calc(100vh-6rem)]">
+            <!-- Text Content -->
+            <div class="lg:w-1/2 text-center lg:text-left mb-12 lg:mb-0 lg:pr-8 xl:pr-12">
+                <div class="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-gray-800 font-medium mb-6">
+                    🚀 Fast • Fresh • Reliable
+                </div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight mb-6">
+                    Groceries Delivered in 
+                    <span class="text-white font-light block lg:inline">15 Minutes</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-700 mb-8 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+                    Fresh produce, premium meats, dairy essentials, and pantry staples delivered to your door in record time. Quality you can trust at speeds you'll love.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-6">
+                    <a href="#products" class="inline-block bg-gray-900 hover:bg-gray-800 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-shopping-cart mr-2"></i>Order Now
+                    </a>
+                    <a href="#" class="inline-flex items-center text-gray-800 hover:text-white font-medium transition-colors group">
+                        <i class="fas fa-mobile-alt mr-2"></i>Download App
+                        <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+
+                <!-- Trust Indicators -->
+                <div class="flex items-center justify-center lg:justify-start space-x-6 mt-8 text-gray-700">
+                    <div class="flex items-center">
+                        <i class="fas fa-star text-yellow-500 mr-1"></i>
+                        <span class="font-semibold">4.9</span>
+                        <span class="text-sm ml-1">(2.5k reviews)</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-truck text-green-500 mr-1"></i>
+                        <span class="text-sm">Free delivery</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hero Image -->
+            <div class="lg:w-1/2 relative mt-8 lg:mt-0">
+                <div class="relative z-10 max-w-md lg:max-w-lg mx-auto">
+                    <img src="images/grocery-image.png"
+                         alt="Fresh Groceries Delivery"
+                         class="w-full animate-float drop-shadow-2xl">
+                </div>
+                <!-- Decorative elements -->
+                <div class="absolute -top-4 -right-4 w-20 h-20 bg-white bg-opacity-20 rounded-full animate-pulse"></div>
+                <div class="absolute -bottom-4 -left-4 w-16 h-16 bg-white bg-opacity-20 rounded-full animate-pulse delay-1000"></div>
+                <div class="absolute top-1/2 -left-8 w-12 h-12 bg-white bg-opacity-15 rounded-full animate-bounce"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <a href="#about" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-10 group">
+        <div class="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center group-hover:bg-opacity-30 transition-all">
+            <i class="fas fa-chevron-down text-gray-800 text-xl"></i>
+        </div>
+    </a>
+</section>
+
+    <!-- Stats Section -->
+<section class="bg-white py-16 lg:py-20 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+            <div class="text-center stat-item group" data-target="10000">
+                <div class="bg-yellow-50 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 group-hover:bg-yellow-100 transition-colors">
+                    <i class="fas fa-users text-yellow-500 text-2xl"></i>
+                </div>
+                <h3 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-yellow-500 mb-2">0</h3>
+                <p class="text-gray-600 font-medium">Happy Customers</p>
+            </div>
+            <div class="text-center stat-item group" data-target="500">
+                <div class="bg-yellow-50 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 group-hover:bg-yellow-100 transition-colors">
+                    <i class="fas fa-box text-yellow-500 text-2xl"></i>
+                </div>
+                <h3 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-yellow-500 mb-2">0</h3>
+                <p class="text-gray-600 font-medium">Products</p>
+            </div>
+            <div class="text-center stat-item group" data-target="15">
+                <div class="bg-yellow-50 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 group-hover:bg-yellow-100 transition-colors">
+                    <i class="fas fa-clock text-yellow-500 text-2xl"></i>
+                </div>
+                <h3 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-yellow-500 mb-2">0</h3>
+                <p class="text-gray-600 font-medium">Minute Delivery</p>
+            </div>
+            <div class="text-center stat-item group" data-target="24">
+                <div class="bg-yellow-50 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 group-hover:bg-yellow-100 transition-colors">
+                    <i class="fas fa-headset text-yellow-500 text-2xl"></i>
+                </div>
+                <h3 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-yellow-500 mb-2">0</h3>
+                <p class="text-gray-600 font-medium">Hour Service</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <!-- About Section -->
+        <section id="about" class="py-16 lg:py-24 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                    <!-- Text Content -->
+                    <div class="order-2 lg:order-1">
+                        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+                            About Grocify
+                        </h2>
+                        <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                            Founded in 2020 with a simple mission: to deliver fresh groceries to your doorstep in just 15 minutes.
+                        </p>
+                        <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                            Our dedicated team works around the clock to ensure you get the freshest products at lightning speed.
+                        </p>
+                        <button class="learn-more-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-full py-4 px-8 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            Learn More
+                        </button>
+                    </div>
+                    
+                    <!-- Image -->
+                    <div class="order-1 lg:order-2">
+                        <div class="relative">
+                            <img src="/images/grocery-image.png" 
+                                alt="Fresh groceries" 
+                                class="w-full rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow duration-300">
+                            <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
+                                <i class="fas fa-leaf text-2xl text-gray-900"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-16 lg:py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                        Our Features
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        Discover what makes Grocify the best choice for your grocery needs
+                    </p>
+                </div>
+                
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="feature-card bg-gray-50 p-8 rounded-2xl text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="bg-yellow-100 w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6">
+                            <i class="fas fa-bolt text-yellow-500 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 text-gray-900">15-Minute Delivery</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Get your groceries delivered in just 15 minutes. We guarantee speed without compromising quality.
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card bg-gray-50 p-8 rounded-2xl text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="bg-yellow-100 w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6">
+                            <i class="fas fa-leaf text-yellow-500 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 text-gray-900">Fresh Products</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            We source only the freshest produce and products daily to ensure you get the best quality.
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card bg-gray-50 p-8 rounded-2xl text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="bg-yellow-100 w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6">
+                            <i class="fas fa-headset text-yellow-500 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 text-gray-900">24/7 Support</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Our customer support team is available round the clock to assist you with any queries.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="py-16 lg:py-24 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                        Popular Products
+                    </h2>
+                    <p class="text-xl text-gray-600">
+                        Customers love these fresh picks
+                    </p>
+                </div>
+                
+                <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
+                    <!-- Products will be populated by JavaScript -->
+                </div>
+                
+                <div class="text-center mt-12">
+                    <button class="view-all-btn border-2 border-yellow-400 text-yellow-500 hover:bg-yellow-400 hover:text-white py-3 px-8 rounded-full font-semibold transition-all duration-300">
+                        View All Products
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="py-16 px-8 md:px-28 bg-white">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-center">What Our Customers Say</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Don't just take our word for it - hear from our satisfied customers</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="testimonial-card p-8 rounded-lg text-white bg-[url('images/testimonial-bg.jpg')] bg-cover bg-center relative">
+                    <div class="absolute inset-0 bg-black opacity-60 rounded-lg"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center mb-4">
+                            <img src="images/user1.jpg" alt="Customer" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold">Abdulrahman Rashid</h4>
+                                <div class="flex text-yellow-300">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p>"Grocify has completely changed how I shop for groceries. The 15-minute delivery is real and the produce is always fresh!"</p>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card p-8 rounded-lg text-white bg-[url('images/testimonial-bg.jpg')] bg-cover bg-center relative">
+                    <div class="absolute inset-0 bg-black opacity-60 rounded-lg"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center mb-4">
+                            <img src="images/user2.jpg" alt="Customer" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold">Abdulelah Ahmed</h4>
+                                <div class="flex text-yellow-300">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p>"I was skeptical at first, but Grocify delivers exactly what they promise. The app is easy to use and delivery is lightning fast."</p>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card p-8 rounded-lg text-white bg-[url('images/testimonial-bg.jpg')] bg-cover bg-center relative">
+                    <div class="absolute inset-0 bg-black opacity-60 rounded-lg"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center mb-4">
+                            <img src="images/user3.jpg" alt="Customer" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold">Salah Nasser</h4>
+                                <div class="flex text-yellow-300">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p>"As a busy guy, Grocify saves me so much time. The quality is consistently good and the delivery is always on time."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- App Download Section -->
+        <section class="py-16 lg:py-24 bg-gradient-to-r from-yellow-400 to-orange-400">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="text-center lg:text-left">
+                        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+                            Download Our App
+                        </h2>
+                        <p class="text-lg text-gray-800 mb-8">
+                            Get the Grocify app for faster ordering, exclusive deals, and order tracking.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                            <a href="#" class="app-store-btn bg-black text-white py-4 px-6 rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors">
+                                <i class="fab fa-apple text-2xl mr-3"></i>
+                                <div class="text-left">
+                                    <div class="text-xs">Download on the</div>
+                                    <div class="font-bold text-lg">App Store</div>
+                                </div>
+                            </a>
+                            <a href="#" class="play-store-btn bg-black text-white py-4 px-6 rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors">
+                                <i class="fab fa-google-play text-xl mr-3"></i>
+                                <div class="text-left">
+                                    <div class="text-xs">Get it on</div>
+                                    <div class="font-bold text-lg">Google Play</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex justify-center">
+                        <img src="images/logo.png" alt="Grocify App" class="max-w-xs lg:max-w-sm animate-float">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-16 lg:py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                        Contact Us
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        Have questions? We're here to help!
+                    </p>
+                </div>
+                
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <!-- Contact Form -->
+                    <div>
+                        <form id="contactForm" class="space-y-6">
+                            <div class="grid sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="name" class="block text-gray-700 font-medium mb-2">Your Name</label>
+                                    <input type="text" id="name" name="name" required 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-gray-700 font-medium mb-2">Email Address</label>
+                                    <input type="email" id="email" name="email" required 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="subject" class="block text-gray-700 font-medium mb-2">Subject</label>
+                                <input type="text" id="subject" name="subject" required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all">
+                            </div>
+                            <div>
+                                <label for="message" class="block text-gray-700 font-medium mb-2">Your Message</label>
+                                <textarea id="message" name="message" rows="5" required 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all resize-none"></textarea>
+                            </div>
+                            <button type="submit" 
+                                    class="w-full bg-yellow-400 text-gray-900 rounded-lg py-4 px-8 font-semibold hover:bg-yellow-500 transition-all duration-300 transform hover:scale-105">
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- Contact Information -->
+                    <div class="bg-gray-50 p-8 rounded-2xl">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-8">Contact Information</h3>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="bg-yellow-400 p-3 rounded-lg mr-4">
+                                    <i class="fas fa-map-marker-alt text-gray-900"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 mb-1">Address</h4>
+                                    <p class="text-gray-600">123 Grocery Street, Foodville, GV 12345</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="bg-yellow-400 p-3 rounded-lg mr-4">
+                                    <i class="fas fa-phone-alt text-gray-900"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 mb-1">Phone</h4>
+                                    <p class="text-gray-600">+1 (555) 123-4567</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="bg-yellow-400 p-3 rounded-lg mr-4">
+                                    <i class="fas fa-envelope text-gray-900"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 mb-1">Email</h4>
+                                    <p class="text-gray-600">hello@grocify.com</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="bg-yellow-400 p-3 rounded-lg mr-4">
+                                    <i class="fas fa-clock text-gray-900"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 mb-1">Hours</h4>
+                                    <p class="text-gray-600">24/7 Service</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 pt-8 border-t border-gray-200">
+                            <h4 class="font-bold text-gray-900 mb-4">Follow Us</h4>
+                            <div class="flex space-x-4">
+                                <a href="#" class="social-link w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 hover:bg-yellow-400 hover:text-white transition-all">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-link w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 hover:bg-yellow-400 hover:text-white transition-all">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="social-link w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 hover:bg-yellow-400 hover:text-white transition-all">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-link w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 hover:bg-yellow-400 hover:text-white transition-all">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter Section -->
+        <section class="py-16 bg-gray-900 text-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h3 class="text-2xl sm:text-3xl font-bold mb-4">Stay Updated</h3>
+                <p class="text-gray-400 mb-8 max-w-2xl mx-auto">
+                    Subscribe to our newsletter for exclusive deals, new product announcements, and grocery tips.
+                </p>
+                <form id="newsletterForm" class="max-w-md mx-auto flex">
+                    <input type="email" placeholder="Enter your email" required
+                        class="flex-1 px-4 py-3 rounded-l-lg focus:outline-none text-gray-900">
+                    <button type="submit" 
+                            class="bg-yellow-400 text-gray-900 px-6 py-3 rounded-r-lg font-semibold hover:bg-yellow-500 transition-colors">
+                        Subscribe
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div>
+                        <img src="images/logo.png" alt="Grocify" class="h-10 mb-4">
+                        <p class="text-gray-400 mb-4">
+                            Delivering fresh groceries to your doorstep in just 15 minutes since 2020.
+                        </p>
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-bold mb-4">Quick Links</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#home" class="text-gray-400 hover:text-yellow-400 transition-colors">Home</a></li>
+                            <li><a href="#about" class="text-gray-400 hover:text-yellow-400 transition-colors">About Us</a></li>
+                            <li><a href="#features" class="text-gray-400 hover:text-yellow-400 transition-colors">Features</a></li>
+                            <li><a href="#testimonials" class="text-gray-400 hover:text-yellow-400 transition-colors">Testimonials</a></li>
+                            <li><a href="#contact" class="text-gray-400 hover:text-yellow-400 transition-colors">Contact</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-bold mb-4">Categories</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors">Fresh Produce</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors">Dairy & Eggs</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors">Meat & Seafood</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors">Bakery</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors">Pantry Staples</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-bold mb-4">Support</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors">Help Center</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors">Track Order</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors">Returns</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors">Privacy Policy</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center">
+                    <p class="text-gray-400 text-sm mb-4 sm:mb-0">
+                        © 2024 Grocify. All rights reserved.
+                    </p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-yellow-400 text-sm transition-colors">Privacy Policy</a>
+                        <a href="#" class="text-gray-400 hover:text-yellow-400 text-sm transition-colors">Terms of Service</a>
+                        <a href="#" class="text-gray-400 hover:text-yellow-400 text-sm transition-colors">Shipping Policy</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Back to Top Button -->
+        <button id="backToTop" class="fixed bottom-8 right-8 bg-yellow-400 text-gray-900 w-12 h-12 rounded-full shadow-lg hover:bg-yellow-500 transition-all duration-300 transform hover:scale-110 opacity-0 invisible">
+            <i class="fas fa-chevron-up"></i>
+        </button>
+
+        <!-- Toast Notifications -->
+        <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2">
+            <!-- Toast notifications will be inserted here -->
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+    </html>
